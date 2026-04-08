@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "",
+  baseURL: "https://ai-note-backend-1umg.onrender.com",
   timeout: 45000,
   headers: { "Content-Type": "application/json" },
 });
@@ -25,7 +25,9 @@ export const uploadNote = (content) =>
 export const uploadNoteFile = (file) => {
   const form = new FormData();
   form.append("file", file);
-  return api.post("/api/notes", form, { headers: { "Content-Type": "multipart/form-data" } });
+  return api.post("/api/notes", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 };
 
 export const summarize = (note_id, mode) =>
