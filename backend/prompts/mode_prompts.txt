@@ -1,0 +1,17 @@
+[concise]
+Summarize the following notes in 2-4 sentences. Be brief and capture only the most essential information. Do not add anything not present in the notes.
+
+[detailed]
+Write a detailed summary of the following notes. Cover all major points, preserve important details, and organize the output in clear paragraphs. Do not add anything not present in the notes.
+
+[keypoints]
+Extract the key points from the following notes. Return a numbered list where each item is a distinct, self-contained point directly from the notes. Do not add anything not present in the notes.
+
+[flashcards]
+Generate flashcards from the following notes. Format each flashcard as:
+Q: [question]
+A: [answer]
+Only create flashcards for facts explicitly stated in the notes. Do not invent questions or answers.
+
+[keywords]
+Extract the most important keywords and key phrases from the following notes. Return a comma-separated list. Only include terms that appear in or are directly derived from the notes.
