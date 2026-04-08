@@ -1,0 +1,30 @@
+.output-display {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9fafb;
+  padding: 10px 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.output-type {
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #4f46e5;
+  letter-spacing: 0.05em;
+}
+.output-time { font-size: 12px; color: #9ca3af; }
+.output-content {
+  padding: 16px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #1f2937;
+  font-family: inherit;
+}

@@ -1,0 +1,62 @@
+.history-panel { display: flex; flex-direction: column; gap: 12px; }
+.history-empty { color: #9ca3af; text-align: center; padding: 32px 0; }
+.history-error { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 0; }
+.btn-retry { background: #4f46e5; color: #fff; padding: 8px 20px; }
+
+.history-skeleton { display: flex; flex-direction: column; gap: 10px; }
+.skeleton-row {
+  height: 52px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.history-note { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+.history-note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f9fafb;
+  cursor: pointer;
+  user-select: none;
+}
+.history-note-header:hover { background: #f3f4f6; }
+.history-id { font-weight: 600; font-size: 14px; color: #4f46e5; }
+.history-filename { font-size: 12px; color: #6b7280; margin-left: 8px; }
+.history-meta { display: flex; gap: 12px; font-size: 12px; color: #9ca3af; align-items: center; }
+.toggle-icon { font-size: 10px; }
+
+.history-note-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.history-content {
+  font-size: 13px;
+  color: #374151;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #f9fafb;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: inherit;
+}
+
+.history-summaries { display: flex; flex-direction: column; gap: 10px; }
+.history-summary { border-left: 3px solid #4f46e5; padding-left: 12px; }
+.summary-type {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #4f46e5;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 4px;
+}
+.summary-output {
+  font-size: 13px;
+  color: #374151;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  line-height: 1.6;
+}
