@@ -1,136 +1,154 @@
-# Note Summarizer
+# 🚀 AI Note Summarizer
 
-A full-stack AI-powered app to summarize notes, extract key points, generate flashcards, and chat with your content — all grounded strictly in what you provide.
+An AI-powered full-stack web application that summarizes notes, extracts key insights, generates flashcards, and allows users to ask questions — all strictly based on the provided content.
 
-## Architecture
+---
+
+## 🌐 Live Demo
+
+* **Frontend (Vercel):** https://your-frontend-link.vercel.app
+* **Backend (Render):** https://ai-note-backend-1umg.onrender.com
+
+---
+
+## ✨ Features
+
+* 🧠 Generate summaries (concise, detailed, key points)
+* 📌 Extract important keywords with explanations
+* 🎴 Create flashcards for revision
+* 💬 Ask questions from notes (Chat with notes)
+* 📄 Upload text or PDF notes
+* 🕘 View history of notes and outputs
+* 🔒 AI safety: no hallucination, answers only from input
+
+---
+
+## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────┐
-│         React Frontend (Vite)        │
-│  NoteInput │ ModeSelector │ Chat     │
-│  OutputDisplay │ HistoryPanel        │
-└────────────────┬────────────────────┘
-                 │ HTTP /api/*
-┌────────────────▼────────────────────┐
-│         Flask REST API               │
-│  routes/ → services/ → models/       │
-│  rate limiting │ security headers    │
-│  input validation │ error handling   │
-└──────────┬──────────────┬───────────┘
-           │              │
-     ┌─────▼─────┐  ┌─────▼──────┐
-     │  SQLite DB │  │  Groq API  │
-     │  (local)   │  │  llama-3.3 │
-     │  Postgres  │  └────────────┘
-     │  (prod)    │
-     └────────────┘
+User → React (Frontend)
+     → Flask API (Backend)
+     → Groq LLM
+     → Response → UI
 ```
 
-## API Endpoints
+---
 
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | /api/notes | Save note (text or file upload) |
-| POST | /api/summarize | Generate AI summary |
-| POST | /api/ask | Ask a question about a note |
-| GET | /api/history | Retrieve all notes and summaries |
-| GET | /api/health | Health check |
+## ⚙️ Tech Stack
 
-## Key Technical Decisions
+* **Frontend:** React (Vite), Axios
+* **Backend:** Flask (Python)
+* **Database:** SQLite (development), PostgreSQL (production-ready)
+* **AI:** Groq (LLaMA 3)
+* **Deployment:** Vercel (frontend), Render (backend)
 
-**Flask blueprints** — each route group is isolated. Routes only handle HTTP (validate, call service, respond). Business logic lives in services only.
+---
 
-**Groq API (llama-3.3-70b-versatile)** — free tier, fast, OpenAI-compatible SDK. Swappable via `AI_MODEL` env var without code changes.
+## 🔌 API Endpoints
 
-**SQLite locally, PostgreSQL in production** — zero config for development. `DATABASE_URL` env var switches automatically. `postgres://` is rewritten to `postgresql://` for SQLAlchemy compatibility (Neon quirk).
+| Method | Endpoint         | Description             |
+| ------ | ---------------- | ----------------------- |
+| POST   | `/api/notes`     | Upload note (text/file) |
+| POST   | `/api/summarize` | Generate summary        |
+| POST   | `/api/ask`       | Ask question            |
+| GET    | `/api/history`   | Get history             |
+| GET    | `/api/health`    | Health check            |
 
-**Temperature 0.2** — keeps AI outputs consistent and factual across repeated calls.
+---
 
-**Lazy AI client** — `_get_client()` in `ai_service.py` initializes on first use. App starts without a key; only fails when AI is actually called.
+## 🧠 AI Design
 
-**Rate limiting via Flask-Limiter** — 10/min on summarize, 20/min on ask/notes, 60/min on history. In-memory in dev, Redis-backed in production via `RATELIMIT_STORAGE_URL`.
+* Uses structured prompts for consistent output
+* Model strictly grounded in user input
+* If information is missing → returns:
+  **"Not specified in the notes"**
+* Low temperature (0.2) for accuracy
+* Prompts stored separately in `/prompts`
 
-**Vercel deployment** — `api/index.py` is the serverless entry point. `vercel.json` routes `/api/*` to Flask and everything else to the React static build.
+---
 
-## AI Usage
-
-All AI calls go through `backend/services/ai_service.py`. Prompts are stored as plain text files in `backend/prompts/` — not hardcoded.
-
-The system prompt strictly grounds the model in user-provided content. The model is instructed to say "Not specified in the notes." when information is absent. This prevents hallucination by design.
-
-See `agents.md` and `claude.md` for full AI guidance and constraints.
-
-## Risks and Weaknesses
-
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| SQLite in production | Data loss under concurrent writes | Use `DATABASE_URL` to switch to PostgreSQL |
-| No user authentication | All notes are shared/public | Add JWT auth before public deployment |
-| In-memory rate limiting | Resets on restart, not shared across workers | Set `RATELIMIT_STORAGE_URL=redis://...` |
-| Chat history not persisted | Lost on page reload | Store chat in DB or localStorage |
-| Groq free tier limits | API throttling under heavy use | Add retry logic or switch to paid tier |
-
-## Extension Approach
-
-- **Auth**: Add Flask-JWT-Extended, scope notes per user with a `user_id` FK on the notes table
-- **Persistent chat**: Add a `chat_messages` table with `note_id`, `role`, `content`
-- **Better DB**: Set `DATABASE_URL` to a PostgreSQL connection string — no code changes needed
-- **Different AI model**: Set `AI_MODEL` env var — the client is model-agnostic
-- **Redis rate limiting**: Set `RATELIMIT_STORAGE_URL=redis://...`
-
-## Setup
+## 🔧 Setup Instructions
 
 ### Backend
+
 ```bash
 cd backend
 pip install -r requirements.txt
-cp .env.example .env   # add GROQ_API_KEY
+cp .env.example .env
+# Add your GROQ_API_KEY
 python app.py
 ```
 
+---
+
 ### Frontend
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000
+Open: http://localhost:3000
 
-### Run Tests
-```bash
-cd backend
-pip install pytest
-pytest tests/
-```
+---
 
-## Environment Variables
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `GROQ_API_KEY` | Yes | — | Groq API key (free at console.groq.com) |
-| `DATABASE_URL` | No | sqlite:///notes.db | Database connection string |
-| `FLASK_ENV` | No | development | Set to `production` for prod |
-| `SECRET_KEY` | No | random | Flask secret key |
-| `CORS_ORIGINS` | No | * | Comma-separated allowed origins |
-
-## Project Structure
+## 🔐 Environment Variables
 
 ```
-api/index.py          # Vercel serverless entry point
+GROQ_API_KEY=your_api_key
+DATABASE_URL=your_database_url (optional)
+FLASK_ENV=development or production
+```
+
+---
+
+## 📁 Project Structure
+
+```
 backend/
-  app.py              # App factory, middleware, error handlers
-  config.py           # All config from env vars
-  extensions.py       # Shared Flask extensions
-  routes/             # HTTP layer — validate, call service, respond
-  services/           # Business logic
-  models/             # SQLAlchemy models
-  prompts/            # AI prompt text files
-  tests/              # Pytest tests
+  app.py
+  routes/
+  services/
+  models/
+  prompts/
+  tests/
+
 frontend/
   src/
-    api.js            # All HTTP calls
-    components/       # React components
-agents.md             # AI agent coding rules and constraints
-claude.md             # Claude-specific AI guidance
+    api.js
+    components/
+
+agents.md
+claude.md
 ```
+
+---
+
+## ⚠️ Limitations
+
+* No user authentication (all notes are shared)
+* Free AI tier may have rate limits
+* Chat history not persisted
+
+---
+
+## 🚀 Future Improvements
+
+* Add user authentication (JWT)
+* Store chat history
+* Improve UI/UX
+* Support multiple languages
+
+---
+
+## 🏆 Conclusion
+
+This project demonstrates:
+
+* Full-stack development (React + Flask)
+* AI integration with prompt engineering
+* Secure API handling with environment variables
+* Deployment using Vercel and Render
+
+---
